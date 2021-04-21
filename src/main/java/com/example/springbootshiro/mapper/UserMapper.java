@@ -12,4 +12,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper{
 
     UserEntity findUserByUserName(@Param("userName") String userName);
+
+    void register(@Param("bean")UserEntity user);
 }

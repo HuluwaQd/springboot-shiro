@@ -3,8 +3,12 @@
 
 <mapper namespace="com.example.springbootshiro.mapper.UserMapper">
 	
-	<select id="findUserByUserName" parameterMap="String" resultType="UserEntity">
-		select * from
+	<select id="findUserByUserName" parameterType="String" resultType="UserEntity">
+		select * from t_user where user_name = #{userName}
 	</select>
+
+	<insert id="register" parameterType="UserEntity">
+		insert into t_user (user_name,password,salt) values (#{bean.userName},#{bean.password},#{bean.salt})
+	</insert>
 
 </mapper>

@@ -1,5 +1,6 @@
 package com.example.springbootshiro.controller;
 
+import com.example.springbootshiro.config.TokenUtils;
 import com.example.springbootshiro.domain.UserEntity;
 import com.example.springbootshiro.service.UserService;
 import org.apache.shiro.SecurityUtils;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -24,14 +27,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
+    @PostMapping("/register")
+    public String register(@RequestBody UserEntity user){
+        userService.register(user);
+        return "注册成功";
+    }
+
+    /**
+     * 登录
+     * @param user
+     * @param request
+     * @return
+     */
     @PostMapping("/login")
-    public String login(@RequestBody UserEntity user){
+    public String login(@RequestBody UserEntity user, HttpServletRequest request){
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword());
         try {
             subject.login(usernamePasswordToken);
-            return "登陆成功";
+            UserEntity userByUserName = userService.findUserByUserName(user.getUserName());
+            String token = TokenUtils.getToken(userByUserName.getUserName(), String.valueOf(userByUserName.getUserId()), request.getRemoteAddr());
+            return "登陆成功:" + token;
         }catch (UnknownAccountException e) {
             return "用户不存在";
         }catch (IncorrectCredentialsException e) {

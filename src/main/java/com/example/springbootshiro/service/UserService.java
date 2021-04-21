@@ -8,4 +8,6 @@ import com.example.springbootshiro.domain.UserEntity;
  */
 public interface UserService {
     UserEntity findUserByUserName(String userName);
+
+    void register(UserEntity user);
 }

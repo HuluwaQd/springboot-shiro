@@ -1,5 +1,7 @@
 package com.example.springbootshiro.config;
 
+import com.example.springbootshiro.filter.TokenFilter;
+import com.example.springbootshiro.realm.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -7,6 +9,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,24 +42,28 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(defaultWebSecurityManager);
 
-
-        shiroFilter.setLoginUrl("/login.html");
+        //加入自定义的filter
+        Map<String, Filter> filterMap = shiroFilter.getFilters();
+        filterMap.put("client", new TokenFilter());
+        shiroFilter.setFilters(filterMap);
         shiroFilter.setUnauthorizedUrl("/");
 
-        Map<String, String> filterMap = new LinkedHashMap<>();
-        filterMap.put("/swagger/**", "anon");
-        filterMap.put("/v2/api-docs", "anon");
-        filterMap.put("/swagger-ui.html", "anon");
-        filterMap.put("/webjars/**", "anon");
-        filterMap.put("/swagger-resources/**", "anon");
+        // 过滤URL等
+        Map<String, String> urlMap = new LinkedHashMap<>();
+        urlMap.put("/swagger/**", "anon");
+        urlMap.put("/v2/api-docs", "anon");
+        urlMap.put("/swagger-ui.html", "anon");
+        urlMap.put("/webjars/**", "anon");
+        urlMap.put("/swagger-resources/**", "anon");
 
-        filterMap.put("/login.html", "anon");
-        filterMap.put("/user/login", "anon");
-        filterMap.put("/favicon.ico", "anon");
-        filterMap.put("/captcha.jpg", "anon");
+        urlMap.put("/login.html", "anon");
+        urlMap.put("/user/login", "anon");
+        urlMap.put("/user/register", "anon");
+        urlMap.put("/favicon.ico", "anon");
+        urlMap.put("/captcha.jpg", "anon");
 
-        filterMap.put("/**", "authc");
-        shiroFilter.setFilterChainDefinitionMap(filterMap);
+        urlMap.put("/**", "authc");
+        shiroFilter.setFilterChainDefinitionMap(urlMap);
 
         return shiroFilter;
     }
