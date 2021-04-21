@@ -1,6 +1,12 @@
 server:
   port: 8081
   servlet:
-    context-path: shiro-test
+    context-path: /shiro-test
 mybatis:
   type-aliases-package: com.example.springbootshiro.domain
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    data-username: root
+    data-password: 19921209
+    url: jdbc:mysql://localhost:3306/renren_security?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
