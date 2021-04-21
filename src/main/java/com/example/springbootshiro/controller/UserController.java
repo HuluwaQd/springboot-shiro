@@ -26,7 +26,6 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody UserEntity user){
-        UserEntity userEntity = userService.findUserByUserName(user.getUserName());
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword());
@@ -42,6 +41,19 @@ public class UserController {
         }catch (AuthenticationException e) {
             return "账户验证失败";
         }
+    }
+
+
+    @PostMapping("/logout")
+    public String logout(){
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            subject.logout();
+            return "退出成功";
+        }catch (Exception e){
+            return "退出失败";
+        }
+
     }
 
 

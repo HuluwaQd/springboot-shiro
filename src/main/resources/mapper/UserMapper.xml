@@ -3,6 +3,8 @@
 
 <mapper namespace="com.example.springbootshiro.mapper.UserMapper">
 	
-	<select id="findUserByUserName" parameterMap=""
+	<select id="findUserByUserName" parameterMap="String" resultType="UserEntity">
+		select * from
+	</select>
 
 </mapper>
