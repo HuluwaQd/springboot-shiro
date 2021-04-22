@@ -14,3 +14,6 @@ spring:
     url: jdbc:mysql://localhost:3306/springboot_shiro?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: 19921209
+project:
+  doc:
+    enable: true

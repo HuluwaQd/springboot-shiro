@@ -14,13 +14,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * 所有请求走自定义过滤器
  * @author lyw
  * @Create 2021-04-22 13:49
  */
 public class ShiroFilter extends FormAuthenticationFilter {
-
-    //加密的字符串,相当于签名
-    private static final String SINGNATURE_TOKEN = "加密token";
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
@@ -35,27 +33,34 @@ public class ShiroFilter extends FormAuthenticationFilter {
         String token = getRequestToken(httpServletRequest);
         String login = (httpServletRequest).getServletPath();
 
-        //如果为登录,就放行
+        //如果为登录,或者注册就放行
         if ("/user/login".equals(login)||"/user/register".equals(login)){
             return true;
         }
+        // 没有token
         if (StringUtils.isBlank(token)){
-            System.out.println("没有token");
-            return false;
+            throw new RuntimeException("has no token");
         }
 
-        //从当前shiro中获得用户信息
         Subject subject = SecurityUtils.getSubject();
+        // 没有登陆
+        if (!subject.isAuthenticated()) {
+            throw new RuntimeException("not Authenticated");
+        }
+
+        // 验证token
         String principal = (String)subject.getPrincipal();
         UserService userService = (UserService)ApplicationContextUtil.getBean("userServiceImpl");
         UserEntity user = userService.findUserByUserName(principal);
         JwtTokenUtil jwtTokenUtil = (JwtTokenUtil) ApplicationContextUtil.getBean("jwtTokenUtil");
-
-        return jwtTokenUtil.validateToken(token,user);
+        if(!jwtTokenUtil.validateToken(token,user)){
+            throw new RuntimeException("error token");
+        }
+        return true;
     }
     private String getRequestToken(HttpServletRequest request){
         //默认从请求头中获得token
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
         return token;
     }
 }

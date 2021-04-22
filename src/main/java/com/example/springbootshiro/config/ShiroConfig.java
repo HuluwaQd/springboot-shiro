@@ -52,19 +52,16 @@ public class ShiroConfig {
 
         // 过滤URL
         Map<String, String> urlMap = new LinkedHashMap<>();
-//        urlMap.put("/swagger/**", "anon");
-//        urlMap.put("/v2/api-docs", "anon");
-//        urlMap.put("/swagger-ui.html", "anon");
-//        urlMap.put("/webjars/**", "anon");
-//        urlMap.put("/swagger-resources/**", "anon");
-//
-//        urlMap.put("/login.html", "anon");
-//        urlMap.put("/user/login", "anon");
-//        urlMap.put("/user/register", "anon");
-//        urlMap.put("/favicon.ico", "anon");
-//        urlMap.put("/captcha.jpg", "anon");
+        urlMap.put("/swagger/**", "anon");
+        urlMap.put("/v2/api-docs", "anon");
+        urlMap.put("/swagger-ui.html", "anon");
+        urlMap.put("/webjars/**", "anon");
+        urlMap.put("/swagger-resources/**", "anon");
+        urlMap.put("/doc.html", "anon");
 
-//        urlMap.put("/**", "authc");
+        urlMap.put("/favicon.ico", "anon");
+        urlMap.put("/captcha.jpg", "anon");
+
         urlMap.put("/**", "auth");
         urlMap.put("/user/login", "anon");
         urlMap.put("/user/register", "anon");

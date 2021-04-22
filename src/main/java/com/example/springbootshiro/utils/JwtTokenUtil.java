@@ -24,10 +24,10 @@ public class JwtTokenUtil implements Serializable {
 
     static final String CLAIM_KEY_USERNAME = "sub";
     static final String CLAIM_KEY_CREATED = "created";
-
+    public static final String TOKEN_HEADER = "Authorization";
     private final String secret="shiro";
 
-    private final Long expiration=3600L;
+    private final Long expiration=86400L;
 
     public String getUsernameFromToken(String token) {
         String username;
