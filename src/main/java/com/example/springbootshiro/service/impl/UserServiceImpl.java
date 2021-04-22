@@ -1,6 +1,6 @@
 package com.example.springbootshiro.service.impl;
 
-import com.example.springbootshiro.config.ShiroUtils;
+import com.example.springbootshiro.utils.ShiroUtils;
 import com.example.springbootshiro.domain.UserEntity;
 import com.example.springbootshiro.mapper.UserMapper;
 import com.example.springbootshiro.service.UserService;

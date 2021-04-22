@@ -6,7 +6,7 @@
  * 版权所有，侵权必究！
  */
 
-package com.example.springbootshiro.config;
+package com.example.springbootshiro.utils;
 
 import com.example.springbootshiro.domain.UserEntity;
 import org.apache.commons.lang.RandomStringUtils;

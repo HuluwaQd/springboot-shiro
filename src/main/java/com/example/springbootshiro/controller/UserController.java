@@ -1,11 +1,10 @@
 package com.example.springbootshiro.controller;
 
-import com.example.springbootshiro.config.TokenUtils;
+import com.example.springbootshiro.utils.JwtTokenUtil;
 import com.example.springbootshiro.domain.UserEntity;
 import com.example.springbootshiro.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +25,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     /**
      * 注册
@@ -41,18 +42,18 @@ public class UserController {
     /**
      * 登录
      * @param user
-     * @param request
+     * @param
      * @return
      */
     @PostMapping("/login")
-    public String login(@RequestBody UserEntity user, HttpServletRequest request){
+    public String login(@RequestBody UserEntity user,HttpServletRequest request){
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword());
         try {
             subject.login(usernamePasswordToken);
             UserEntity userByUserName = userService.findUserByUserName(user.getUserName());
-            String token = TokenUtils.getToken(userByUserName.getUserName(), String.valueOf(userByUserName.getUserId()), request.getRemoteAddr());
+            String token = jwtTokenUtil.generateToken(userByUserName.getUserName());
             return "登陆成功:" + token;
         }catch (UnknownAccountException e) {
             return "用户不存在";
@@ -64,7 +65,6 @@ public class UserController {
             return "账户验证失败";
         }
     }
-
 
     @PostMapping("/logout")
     public String logout(){
