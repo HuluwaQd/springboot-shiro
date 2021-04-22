@@ -1,5 +1,8 @@
 package com.example.springbootshiro.business.system.controller;
 
+import com.example.springbootshiro.common.HttpResult;
+import com.example.springbootshiro.exception.BusinessConstant;
+import com.example.springbootshiro.exception.BusinessException;
 import com.example.springbootshiro.utils.JwtTokenUtil;
 import com.example.springbootshiro.business.system.domain.UserEntity;
 import com.example.springbootshiro.business.system.service.UserService;
@@ -8,6 +11,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +53,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public String login(@RequestBody UserEntity user,HttpServletRequest request){
+    public HttpResult login(@RequestBody UserEntity user, HttpServletRequest request){
 
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword());
@@ -57,15 +61,15 @@ public class UserController {
             subject.login(usernamePasswordToken);
             UserEntity userByUserName = userService.findUserByUserName(user.getUserName());
             String token = jwtTokenUtil.generateToken(userByUserName.getUserName());
-            return "登陆成功:" + token;
+            return HttpResult.result(BusinessConstant.BUSINESS_SUCCESS_CODE, "登陆成功", token);
         }catch (UnknownAccountException e) {
-            return "用户不存在";
+            return HttpResult.result(BusinessConstant.BUSINESS_ERROR_CODE, "用户不存在", null);
         }catch (IncorrectCredentialsException e) {
-            return "账号或密码不正确";
+            return HttpResult.result(BusinessConstant.BUSINESS_ERROR_CODE, "账号或密码不正确", null);
         }catch (LockedAccountException e) {
-            return "账号已被锁定,请联系管理员";
+            return HttpResult.result(BusinessConstant.BUSINESS_ERROR_CODE, "账号已被锁定,请联系管理员", null);
         }catch (AuthenticationException e) {
-            return "账户验证失败";
+            return HttpResult.result(BusinessConstant.BUSINESS_ERROR_CODE, "账号验证失败", null);
         }
     }
 

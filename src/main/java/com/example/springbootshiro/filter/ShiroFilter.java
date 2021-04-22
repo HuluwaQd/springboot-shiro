@@ -2,6 +2,7 @@ package com.example.springbootshiro.filter;
 
 import com.example.springbootshiro.business.system.domain.UserEntity;
 import com.example.springbootshiro.business.system.service.UserService;
+import com.example.springbootshiro.exception.BusinessException;
 import com.example.springbootshiro.utils.ApplicationContextUtil;
 import com.example.springbootshiro.utils.JwtTokenUtil;
 import org.apache.commons.lang.StringUtils;
@@ -39,22 +40,23 @@ public class ShiroFilter extends FormAuthenticationFilter {
         }
         // 没有token
         if (StringUtils.isBlank(token)){
-            throw new RuntimeException("has no token");
+            throw new BusinessException("has no token");
         }
 
         Subject subject = SecurityUtils.getSubject();
         // 没有登陆
         if (!subject.isAuthenticated()) {
-            throw new RuntimeException("not Authenticated");
+            throw new BusinessException("not Authenticated");
         }
 
         // 验证token
         String principal = (String)subject.getPrincipal();
+        System.out.println(principal);
         UserService userService = (UserService)ApplicationContextUtil.getBean("userServiceImpl");
         UserEntity user = userService.findUserByUserName(principal);
         JwtTokenUtil jwtTokenUtil = (JwtTokenUtil) ApplicationContextUtil.getBean("jwtTokenUtil");
         if(!jwtTokenUtil.validateToken(token,user)){
-            throw new RuntimeException("error token");
+            throw new BusinessException("error token");
         }
         return true;
     }
