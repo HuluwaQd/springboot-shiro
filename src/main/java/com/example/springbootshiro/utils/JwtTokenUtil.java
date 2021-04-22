@@ -1,6 +1,6 @@
 package com.example.springbootshiro.utils;
 
-import com.example.springbootshiro.domain.UserEntity;
+import com.example.springbootshiro.business.system.domain.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

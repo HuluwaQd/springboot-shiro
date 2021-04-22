@@ -1,7 +1,7 @@
 package com.example.springbootshiro.realm;
 
-import com.example.springbootshiro.domain.UserEntity;
-import com.example.springbootshiro.service.UserService;
+import com.example.springbootshiro.business.system.domain.UserEntity;
+import com.example.springbootshiro.business.system.service.UserService;
 import com.example.springbootshiro.utils.ApplicationContextUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

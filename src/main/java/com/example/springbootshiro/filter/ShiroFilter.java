@@ -1,7 +1,7 @@
 package com.example.springbootshiro.filter;
 
-import com.example.springbootshiro.domain.UserEntity;
-import com.example.springbootshiro.service.UserService;
+import com.example.springbootshiro.business.system.domain.UserEntity;
+import com.example.springbootshiro.business.system.service.UserService;
 import com.example.springbootshiro.utils.ApplicationContextUtil;
 import com.example.springbootshiro.utils.JwtTokenUtil;
 import org.apache.commons.lang.StringUtils;

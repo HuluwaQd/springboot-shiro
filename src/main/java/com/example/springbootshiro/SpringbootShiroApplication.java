@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan({"com.example.springbootshiro.mapper"})
+@MapperScan({"com.example.springbootshiro.business.system.mapper"})
 public class SpringbootShiroApplication {
 
     public static void main(String[] args) {

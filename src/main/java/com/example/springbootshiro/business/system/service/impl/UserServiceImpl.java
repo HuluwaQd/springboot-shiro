@@ -1,9 +1,9 @@
-package com.example.springbootshiro.service.impl;
+package com.example.springbootshiro.business.system.service.impl;
 
 import com.example.springbootshiro.utils.ShiroUtils;
-import com.example.springbootshiro.domain.UserEntity;
-import com.example.springbootshiro.mapper.UserMapper;
-import com.example.springbootshiro.service.UserService;
+import com.example.springbootshiro.business.system.domain.UserEntity;
+import com.example.springbootshiro.business.system.mapper.UserMapper;
+import com.example.springbootshiro.business.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

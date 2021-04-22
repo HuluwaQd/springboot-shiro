@@ -1,6 +1,6 @@
-package com.example.springbootshiro.service;
+package com.example.springbootshiro.business.system.service;
 
-import com.example.springbootshiro.domain.UserEntity;
+import com.example.springbootshiro.business.system.domain.UserEntity;
 
 /**
  * @author lyw

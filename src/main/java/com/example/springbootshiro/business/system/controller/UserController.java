@@ -1,13 +1,14 @@
-package com.example.springbootshiro.controller;
+package com.example.springbootshiro.business.system.controller;
 
 import com.example.springbootshiro.utils.JwtTokenUtil;
-import com.example.springbootshiro.domain.UserEntity;
-import com.example.springbootshiro.service.UserService;
+import com.example.springbootshiro.business.system.domain.UserEntity;
+import com.example.springbootshiro.business.system.service.UserService;
 import io.swagger.annotations.Api;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    public String register(@RequestBody UserEntity user){
+    public String register(@RequestBody @Validated UserEntity user){
         userService.register(user);
         return "注册成功";
     }

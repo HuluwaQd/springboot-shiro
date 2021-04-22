@@ -3,7 +3,7 @@ server:
   servlet:
     context-path: /shiro-test
 mybatis:
-  type-aliases-package: com.example.springbootshiro.domain
+  type-aliases-package: com.example.springbootshiro.business.system.domain
   configuration:
     map-underscore-to-camel-case=true: true
   mapper-locations: classpath*:/mapper/**/*.xml

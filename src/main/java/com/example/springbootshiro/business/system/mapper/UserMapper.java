@@ -1,6 +1,6 @@
-package com.example.springbootshiro.mapper;
+package com.example.springbootshiro.business.system.mapper;
 
-import com.example.springbootshiro.domain.UserEntity;
+import com.example.springbootshiro.business.system.domain.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -8,7 +8,7 @@
 
 package com.example.springbootshiro.utils;
 
-import com.example.springbootshiro.domain.UserEntity;
+import com.example.springbootshiro.business.system.domain.UserEntity;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;

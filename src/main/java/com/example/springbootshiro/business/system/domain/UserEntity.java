@@ -1,6 +1,9 @@
-package com.example.springbootshiro.domain;
+package com.example.springbootshiro.business.system.domain;
 
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author lyw
@@ -9,7 +12,9 @@ import lombok.Data;
 @Data
 public class UserEntity {
     private Long userId;
+    @NotBlank
     private String userName;
+    @NotBlank
     private String password;
     private String salt;
 }
