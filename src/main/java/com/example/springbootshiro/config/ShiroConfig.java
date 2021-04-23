@@ -1,12 +1,13 @@
 package com.example.springbootshiro.config;
 
-import com.example.springbootshiro.filter.ShiroFilter;
+import com.example.springbootshiro.filter.CustomFilter;
 import com.example.springbootshiro.realm.UserRealm;
 import com.example.springbootshiro.utils.ShiroUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,8 @@ import java.util.Map;
  */
 @Configuration
 public class ShiroConfig {
+//    @Autowired
+//    private CustomFilter customFilter;
 
     @Bean
     public DefaultWebSecurityManager initSecurityManager(Realm realm){
@@ -39,15 +42,14 @@ public class ShiroConfig {
         return userRealm;
     }
 
-    @Bean("shiroFilter")
+    @Bean
     public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(defaultWebSecurityManager);
 
         //加入自定义的filter
         Map<String, Filter> filterMap = shiroFilter.getFilters();
-//        filterMap.put("jwtFilter", new JWTFilter());
-        filterMap.put("auth",new ShiroFilter());
+        filterMap.put("auth",new CustomFilter());
         shiroFilter.setFilters(filterMap);
 
         // 过滤URL

@@ -3,12 +3,12 @@ package com.example.springbootshiro.exception;
 import org.springframework.http.HttpStatus;
 
 /**
+ * 自定义业务异常
  * @author lyw
  * @Create 2021-04-22 17:05
  */
 public class BusinessException extends RuntimeException{
     public final static Integer BUSINESS_ERROR_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
-    public final static Integer BUSINESS_SUCCESS_CODE = HttpStatus.OK.value();
     /**
      * Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be
