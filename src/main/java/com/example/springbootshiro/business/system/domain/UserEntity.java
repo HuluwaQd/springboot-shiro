@@ -17,4 +17,5 @@ public class UserEntity {
     @NotBlank
     private String password;
     private String salt;
+    private String yzm;
 }

@@ -96,6 +96,14 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword());
         try {
             // 1.验证
+            Object sessionAttribute = ShiroUtils.getSessionAttribute(Constants.KAPTCHA_SESSION_KEY);
+            if(sessionAttribute == null){
+                throw new BusinessException("验证码异常");
+            }
+            String yzm = (String) sessionAttribute;
+            if (!yzm.equals(user.getYzm())) {
+                throw new BusinessException("验证码不正确");
+            }
             Subject subject = SecurityUtils.getSubject();
             subject.login(usernamePasswordToken);
             // 2.验证通过，生成新token
