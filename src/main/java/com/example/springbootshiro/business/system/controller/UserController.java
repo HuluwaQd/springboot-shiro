@@ -13,10 +13,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,20 +54,43 @@ public class UserController {
     @PostMapping("/login")
     public HttpResult login(@RequestBody UserEntity user, HttpServletRequest request){
 
-        // 判断是否已经登陆
-        if(redisUtil.get(user.getUserName()) != null){
-            throw new BusinessException("该账号已经在别处登陆，请先下线");
+        Subject subject = SecurityUtils.getSubject();
+        return login(subject,user);
+    }
+
+
+    @PostMapping("/logout")
+    public String logout(){
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            redisUtil.delete((String)subject.getPrincipal());
+            subject.logout();
+            return "退出成功";
+        }catch (Exception e){
+            return "退出失败";
         }
 
-        // 没有登陆进行登陆
-        Subject subject = SecurityUtils.getSubject();
+    }
+
+    /**
+     * 登陆
+     * @param subject
+     * @param user
+     * @return
+     */
+    public HttpResult login(Subject subject,UserEntity user){
+
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword());
         try {
+            // 1.验证
             subject.login(usernamePasswordToken);
+            // 2.验证通过，生成新token
             UserEntity userByUserName = userService.findUserByUserName(user.getUserName());
             String token = jwtTokenUtil.generateToken(userByUserName.getUserName());
-            // 存入redis
-            redisUtil.set(user.getUserName(),token);
+            // 3.存入redis，设置默认过期时间(秒) 5分钟
+            Long time = 60L*5;
+            redisUtil.set(user.getUserName(),token,time);
+            // 4.返回token
             return HttpResult.result(BusinessConstant.BUSINESS_SUCCESS_CODE, "登陆成功", token);
         }catch (UnknownAccountException e) {
             throw new BusinessException("用户不存在");
@@ -81,18 +101,6 @@ public class UserController {
         }catch (AuthenticationException e) {
             throw new BusinessException("账号验证失败");
         }
-    }
-
-    @PostMapping("/logout")
-    public String logout(){
-        try {
-            Subject subject = SecurityUtils.getSubject();
-            subject.logout();
-            return "退出成功";
-        }catch (Exception e){
-            return "退出失败";
-        }
-
     }
 
 

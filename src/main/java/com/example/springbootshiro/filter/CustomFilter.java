@@ -7,13 +7,10 @@ import com.example.springbootshiro.exception.FilterExceptionUtil;
 import com.example.springbootshiro.utils.ApplicationContextUtil;
 import com.example.springbootshiro.utils.JwtTokenUtil;
 import com.example.springbootshiro.utils.RedisUtil;
-import javafx.application.Application;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -57,38 +54,42 @@ public class CustomFilter extends FormAuthenticationFilter {
             return true;
         }
 
-        // 没有token
+
+        // =================接口请求验证=================
+
+        // 1.判断有无token
         if (StringUtils.isBlank(token)){
             FilterExceptionUtil.sendErrorToController(new BusinessException("没有token"),(HttpServletRequest) request,(HttpServletResponse) response);
             return false;
         }
 
-
+        // 2.验证token在redis中是否过期
         Subject subject = SecurityUtils.getSubject();
-        // 异地登陆
-        if (!subject.isAuthenticated()) {
-            // 验证是否在redis中存在相同的token
-            String usernameFromToken = jwtTokenUtil.getUsernameFromToken(token);
-            String redisToken = (String)redisUtil.get(usernameFromToken);
-            if (!token.equals(redisToken)){
-                FilterExceptionUtil.sendErrorToController(new BusinessException("该账号已经在别处登陆，请先下线"),(HttpServletRequest) request,(HttpServletResponse) response);
-                return false;
-            }else {
-                return true;
-            }
-//            FilterExceptionUtil.sendErrorToController(new BusinessException("没有登陆"),(HttpServletRequest) request,(HttpServletResponse) response);
-        }else {
-            // 非异地登陆，验证token
-            String principal = (String)subject.getPrincipal();
-            UserEntity user = userService.findUserByUserName(principal);
-            // token错误
-            if(!jwtTokenUtil.validateToken(token,user)){
-                FilterExceptionUtil.sendErrorToController(new BusinessException("token错误"),(HttpServletRequest) request,(HttpServletResponse) response);
-                return false;
-            }
-            return true;
+        String principal = (String)subject.getPrincipal();
+        Object redisValue = redisUtil.get(principal);
+        if( redisValue == null){
+            FilterExceptionUtil.sendErrorToController(new BusinessException("token过期"),(HttpServletRequest) request,(HttpServletResponse) response);
+            return false;
         }
+
+        // 3.验证token,与redis中token是否一致，token取出的userName是否相同
+        String redisToken = (String)redisValue;
+        UserEntity user = userService.findUserByUserName(principal);
+        if(!redisToken.equals(token) || !jwtTokenUtil.validateToken(token,user)){
+            FilterExceptionUtil.sendErrorToController(new BusinessException("token错误"),(HttpServletRequest) request,(HttpServletResponse) response);
+            return false;
+        }
+
+        // 4.验证通过，刷新redis过期时间
+        Long time = 60L*5;
+        redisUtil.expire(principal,time);
+
+        // 5.过滤器放行
+        return true;
+
     }
+
+
     private String getRequestToken(HttpServletRequest request){
         //默认从请求头中获得token
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
