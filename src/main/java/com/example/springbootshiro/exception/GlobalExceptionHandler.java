@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         String message = exception.getMessage();
         HttpResult httpResult = new HttpResult();
         httpResult.setMsg(message);
-        httpResult.setCode(BusinessException.BUSINESS_ERROR_CODE);
+        httpResult.setCode(exception.getBUSINESS_CODE());
         return httpResult;
     }
 }

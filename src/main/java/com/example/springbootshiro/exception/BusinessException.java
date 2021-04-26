@@ -8,7 +8,15 @@ import org.springframework.http.HttpStatus;
  * @Create 2021-04-22 17:05
  */
 public class BusinessException extends RuntimeException{
-    public final static Integer BUSINESS_ERROR_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
+    public Integer getBUSINESS_CODE() {
+        return BUSINESS_CODE;
+    }
+
+    public void setBUSINESS_CODE(Integer BUSINESS_CODE) {
+        this.BUSINESS_CODE = BUSINESS_CODE;
+    }
+
+    private Integer BUSINESS_CODE = HttpStatus.INTERNAL_SERVER_ERROR.value();
     /**
      * Constructs a new runtime exception with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be
@@ -26,6 +34,12 @@ public class BusinessException extends RuntimeException{
      */
     public BusinessException(String message) {
         super(message);
+    }
+
+    public BusinessException(String message,Integer code) {
+        super(message);
+        BUSINESS_CODE = code;
+
     }
 
     /**

@@ -57,3 +57,5 @@ spring:
 project:
   doc:
     enable: true
+
+  base-packages: com.example.springbootshiro

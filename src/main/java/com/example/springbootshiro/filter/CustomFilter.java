@@ -2,7 +2,9 @@ package com.example.springbootshiro.filter;
 
 import com.example.springbootshiro.business.system.domain.UserEntity;
 import com.example.springbootshiro.business.system.service.UserService;
+import com.example.springbootshiro.config.RedisConfig;
 import com.example.springbootshiro.exception.BusinessException;
+import com.example.springbootshiro.exception.CodeConstant;
 import com.example.springbootshiro.exception.FilterExceptionUtil;
 import com.example.springbootshiro.utils.ApplicationContextUtil;
 import com.example.springbootshiro.utils.JwtTokenUtil;
@@ -46,11 +48,15 @@ public class CustomFilter extends FormAuthenticationFilter {
         String login = (httpServletRequest).getServletPath();
 
         // 注册放行
-        if ("/user/register".equals(login)){
+        if ("/sys/register".equals(login)){
             return true;
         }
         //登录
-        if ("/user/login".equals(login)){
+        if ("/sys/login".equals(login)){
+            return true;
+        }
+        //验证码
+        if ("/sys/captcha.jpg".equals(login)){
             return true;
         }
 
@@ -59,7 +65,7 @@ public class CustomFilter extends FormAuthenticationFilter {
 
         // 1.判断有无token
         if (StringUtils.isBlank(token)){
-            FilterExceptionUtil.sendErrorToController(new BusinessException("没有token"),(HttpServletRequest) request,(HttpServletResponse) response);
+            FilterExceptionUtil.sendErrorToController(new BusinessException("没有token", CodeConstant.SYS_UNAUTHORIZED),(HttpServletRequest) request,(HttpServletResponse) response);
             return false;
         }
 
@@ -68,7 +74,7 @@ public class CustomFilter extends FormAuthenticationFilter {
         String principal = (String)subject.getPrincipal();
         Object redisValue = redisUtil.get(principal);
         if( redisValue == null){
-            FilterExceptionUtil.sendErrorToController(new BusinessException("token过期"),(HttpServletRequest) request,(HttpServletResponse) response);
+            FilterExceptionUtil.sendErrorToController(new BusinessException("token过期",CodeConstant.SYS_UNAUTHORIZED),(HttpServletRequest) request,(HttpServletResponse) response);
             return false;
         }
 
@@ -76,13 +82,12 @@ public class CustomFilter extends FormAuthenticationFilter {
         String redisToken = (String)redisValue;
         UserEntity user = userService.findUserByUserName(principal);
         if(!redisToken.equals(token) || !jwtTokenUtil.validateToken(token,user)){
-            FilterExceptionUtil.sendErrorToController(new BusinessException("token错误"),(HttpServletRequest) request,(HttpServletResponse) response);
+            FilterExceptionUtil.sendErrorToController(new BusinessException("token错误",CodeConstant.SYS_UNAUTHORIZED),(HttpServletRequest) request,(HttpServletResponse) response);
             return false;
         }
 
         // 4.验证通过，刷新redis过期时间
-        Long time = 60L*5;
-        redisUtil.expire(principal,time);
+        redisUtil.expire(principal,RedisConfig.EXPIRE_TIME);
 
         // 5.过滤器放行
         return true;

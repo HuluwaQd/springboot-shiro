@@ -8,7 +8,7 @@
 	</select>
 
 	<insert id="register" parameterType="UserEntity">
-		insert into t_user (user_name,password,salt) values (#{bean.userName},#{bean.password},#{bean.salt})
+		insert into t_user (user_id,user_name,password,salt) values (#{bean.userId},#{bean.userName},#{bean.password},#{bean.salt})
 	</insert>
 
 </mapper>

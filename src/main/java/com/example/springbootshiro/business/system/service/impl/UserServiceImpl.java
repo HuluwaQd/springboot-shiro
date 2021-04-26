@@ -1,5 +1,6 @@
 package com.example.springbootshiro.business.system.service.impl;
 
+import com.example.springbootshiro.config.snowflake.IDGenerator;
 import com.example.springbootshiro.utils.ShiroUtils;
 import com.example.springbootshiro.business.system.domain.UserEntity;
 import com.example.springbootshiro.business.system.mapper.UserMapper;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private IDGenerator idGenerator;
 
     @Override
     public UserEntity findUserByUserName(String userName) {
@@ -29,6 +32,7 @@ public class UserServiceImpl implements UserService {
         String md5Password = ShiroUtils.MD5(user.getPassword(), salt);
         user.setPassword(md5Password);
         user.setSalt(salt);
+        user.setUserId(idGenerator.nextId());
         userMapper.register(user);
     }
 }

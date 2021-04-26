@@ -65,8 +65,9 @@ public class ShiroConfig {
         urlMap.put("/captcha.jpg", "anon");
 
         urlMap.put("/**", "auth");
-        urlMap.put("/user/login", "anon");
-        urlMap.put("/user/register", "anon");
+        urlMap.put("/sys/login", "anon");
+        urlMap.put("/sys/register", "anon");
+        urlMap.put("/sys/captcha.jpg", "anon");
         shiroFilter.setFilterChainDefinitionMap(urlMap);
 
         return shiroFilter;
